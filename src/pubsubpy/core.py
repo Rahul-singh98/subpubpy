@@ -1,6 +1,7 @@
 from .abstract import *
 from .utils import RegexDict
 from typing import List
+from threading import Lock
 
 
 class SimplePubsub(AbstractPubSub):
@@ -69,7 +70,7 @@ class SimplePubsub(AbstractPubSub):
             self._handler[event].append(callback)
 
 
-class ThreadSafePubSub(AbstractThreadSafe, SimplePubsub):
+class ThreadSafePubSub(AbstractPubSub):
     """Thread safe publish subscriber model which works under multithreading\n
     concept.
 
@@ -87,8 +88,18 @@ class ThreadSafePubSub(AbstractThreadSafe, SimplePubsub):
     sub(event, callback)
         register callback with the event."""
 
+    _instance = None
+    _lock: Lock = Lock()
+
     def __new__(cls, *args, **kwargs):
-        return AbstractThreadSafe().__new__(cls, *args, **kwargs)
+        """
+        Possible changes to the value of the `__init__` argument do not affect
+        the returned instance.
+        """
+        with cls._lock:
+            if not cls._instance:
+                cls._instance = super(ThreadSafePubSub, cls).__new__(cls)
+        return cls._instance
 
     def pub(self, event: str, payload: Any) -> None:
         """Publishes the events.
@@ -129,6 +140,7 @@ class ThreadSafePubSub(AbstractThreadSafe, SimplePubsub):
 
         super().sub(event, callback)
 
+        # print("Sub Called")
         with self._lock:
             if event not in self._handler:
                 self._handler[event] = [callback]

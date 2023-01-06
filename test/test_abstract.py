@@ -1,21 +1,21 @@
-from src.pubsubpy.abstract import AbstractThreadSafe, AbstractPubSub
+from src.pubsubpy.abstract import AbstractPubSub
 from unittest import TestCase, main
 
 
-class TestAbstractThreadSafe(TestCase):
+# class TestAbstractThreadSafe(TestCase):
 
-    def test_creation(self):
-        t1 = AbstractThreadSafe()
+#     def test_creation(self):
+#         t1 = AbstractThreadSafe()
 
-    def test_multiple_create(self):
-        t1 = AbstractThreadSafe()
-        t2 = AbstractThreadSafe()
+#     def test_multiple_create(self):
+#         t1 = AbstractThreadSafe()
+#         t2 = AbstractThreadSafe()
 
-        # test objects
-        self.assertEqual(t1, t2)
+#         # test objects
+#         self.assertEqual(t1, t2)
 
-        # test objects addresses
-        self.assertEqual(id(t1), id(t2))
+#         # test objects addresses
+#         self.assertEqual(id(t1), id(t2))
 
 
 class TestAbstractPubSub(TestCase):

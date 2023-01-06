@@ -1,10 +1,9 @@
 Metadata-Version: 2.1
 Name: pubsubpy
-Version: 0.0.3
+Version: 0.0.4
 Summary: Multithreading supported python package for publisher and subscriber model.
 Author-email: Rahul Singh <rajput.rahul8510@gmail.com>
-Project-URL: Homepage, https://github.com/
-Project-URL: Bug Tracker, https://github.com/
+Project-URL: Homepage, https://github.com/Rahul-singh98/pubsubpy
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: OS Independent
@@ -12,6 +11,6 @@ Requires-Python: >=3.7
 Description-Content-Type: text/markdown
 License-File: LICENSE
 
-# Example Package
+# Pubsubpy
 
 Publish and Subscribe to next level

@@ -1,7 +1,8 @@
-from src.pubsubpy import SimplePubsub, ThreadSafePubSub, RegexPubsub, ThreadSafeRegexPubsub
+from src.pubsubpy import SimplePubsub, RegexPubsub
 from unittest import TestCase, main
 from unittest.mock import patch
 import io
+
 
 class TestSimplePubsub(TestCase):
 
@@ -44,47 +45,6 @@ class TestSimplePubsub(TestCase):
             s1.sub("test_event", func())
 
 
-# class TestThreadSafePubSub(TestCase):
-
-#     def test_creation(self):
-#         t1 = ThreadSafePubSub()
-
-#     def test_multiple_create(self):
-#         t1 = ThreadSafePubSub()
-#         t2 = ThreadSafePubSub()
-
-#         # test objects
-#         self.assertEqual(t1, t2)
-
-#         # test objects addresses
-#         self.assertEqual(id(t1), id(t2))
-
-#     def test_sub_callback_int(self):
-#         s1 = ThreadSafePubSub()
-#         with self.assertRaises(TypeError):
-#             s1.sub("test_event", 2)
-
-#     def test_sub_callback_lambda(self):
-#         s1 = ThreadSafePubSub()
-#         s1.sub("test_event", lambda x: None)
-
-#     def test_sub_callback_function_1(self):
-#         s1 = ThreadSafePubSub()
-
-#         def func(par):
-#             return None
-
-#         s1.sub("test_event", func)
-
-#     def test_sub_callback_function_2(self):
-#         s1 = ThreadSafePubSub()
-
-#         def func(par=None):
-#             return None
-#         with self.assertRaises(TypeError):
-#             s1.sub("test_event", func())
-
-
 class TestRegexPubsub(TestCase):
 
     def test_creation(self):
@@ -124,7 +84,6 @@ class TestRegexPubsub(TestCase):
             return None
         with self.assertRaises(TypeError):
             s1.sub("test_event", func())
-
 
     @patch('sys.stdout', new_callable=io.StringIO)
     def test_publisher_without_regex(self, mock_stdout):

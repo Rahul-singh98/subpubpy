@@ -11,4 +11,5 @@ src/pubsubpy.egg-info/dependency_links.txt
 src/pubsubpy.egg-info/top_level.txt
 test/test_abstract.py
 test/test_core.py
+test/test_threaded_models.py
 test/test_utils.py

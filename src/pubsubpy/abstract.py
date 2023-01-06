@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from typing import Any, Callable, Union, List, AnyStr
-from threading import Lock
 
 
 class AbstractPubSub(ABC):
@@ -59,47 +58,3 @@ class AbstractPubSub(ABC):
         if not callable(callback):
             raise TypeError(f"{type(callback)} is not Callable")
         return None
-
-
-class AbstractThreadSafe(object):
-    """Utility class to convert base model in threadsafe model.
-    """
-    _instance = None
-    _lock: Lock = Lock()
-
-    def __new__(cls, *args, **kwargs):
-        """
-        Possible changes to the value of the `__init__` argument do not affect
-        the returned instance.
-        """
-        with cls._lock:
-            if not cls._instance:
-                cls._instance = super(AbstractThreadSafe, cls).__new__(cls)
-        return cls._instance
-
-
-# class AbstractRegularExp(ABC):
-#     """Utility class to integrate regular expression.
-
-#     Methods:
-#     --------
-
-#     lookup(pattern, _from)
-#         search for pattern in _from.
-#     """
-
-#     def lookup(self, pattern: str, _from: Union[List, AnyStr]) -> bool:
-#         """Searches for the specific pattern in _from
-
-#         Parameters:
-#         -----------
-#         pattern: str
-#             pattern which we are looking for.
-
-#         _from: Union[List, AnyStr]
-#         """
-#         if isinstance(_from, str):
-#             pass
-#         if isinstance(_from, list):
-#             pass
-#         return False

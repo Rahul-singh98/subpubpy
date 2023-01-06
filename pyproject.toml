@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pubsubpy"
-version = "latest"
+version = "0.0.4"
 authors = [
   { name="Rahul Singh", email="rajput.rahul8510@gmail.com" },
 ]
@@ -18,4 +18,4 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/"
+"Homepage" = "https://github.com/Rahul-singh98/pubsubpy"
