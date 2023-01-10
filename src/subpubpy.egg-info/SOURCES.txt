@@ -5,10 +5,10 @@ src/pubsubpy/__init__.py
 src/pubsubpy/abstract.py
 src/pubsubpy/core.py
 src/pubsubpy/utils.py
-src/pubsubpy.egg-info/PKG-INFO
-src/pubsubpy.egg-info/SOURCES.txt
-src/pubsubpy.egg-info/dependency_links.txt
-src/pubsubpy.egg-info/top_level.txt
+src/subpubpy.egg-info/PKG-INFO
+src/subpubpy.egg-info/SOURCES.txt
+src/subpubpy.egg-info/dependency_links.txt
+src/subpubpy.egg-info/top_level.txt
 test/test_abstract.py
 test/test_core.py
 test/test_threaded_models.py

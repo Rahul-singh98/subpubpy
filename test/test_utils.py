@@ -1,4 +1,4 @@
-from src.pubsubpy.utils import RegexDict
+from src.subpubpy.utils import RegexDict
 from unittest import TestCase, main
 
 

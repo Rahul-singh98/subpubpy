@@ -1,4 +1,4 @@
-from src.pubsubpy import SimplePubsub, RegexPubsub
+from src.subpubpy import SimplePubsub, RegexPubsub
 from unittest import TestCase, main
 from unittest.mock import patch
 import io

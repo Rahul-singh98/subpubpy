@@ -1,4 +1,4 @@
-from src.pubsubpy.abstract import AbstractPubSub
+from src.subpubpy.abstract import AbstractPubSub
 from unittest import TestCase, main
 
 

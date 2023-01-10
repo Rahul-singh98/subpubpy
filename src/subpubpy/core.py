@@ -1,5 +1,5 @@
-from .abstract import *
-from .utils import RegexDict
+from subpubpy.abstract import *
+from subpubpy.utils import RegexDict
 from typing import List
 from threading import Lock
 

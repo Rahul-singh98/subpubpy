@@ -1,4 +1,4 @@
-from src.pubsubpy import ThreadSafePubSub
+from src.subpubpy import ThreadSafePubSub
 from unittest import TestCase, main
 from unittest.mock import patch
 from threading import Thread
