@@ -20,13 +20,16 @@ class SimplePubsub(AbstractPubSub):
         event is published then notify everyone who have subscribed.
 
     sub(event, callback)
-        register callback with the event."""
+        register callback with the event.
+
+    unsub(event, callback)
+        unregister callback with the event."""
 
     def __init__(self):
         """Simple pubsub constructor."""
         super().__init__()
 
-    def pub(self, event: str, payload: Any) -> None:
+    def pub(self, event: str, payload: Any, send_event: bool = False, verbose: bool = True) -> None:
         """Publishes the events.
 
         Parameters:
@@ -36,18 +39,16 @@ class SimplePubsub(AbstractPubSub):
 
         payload: Any
             Any kind of data structure to handle with event.
+
+        send_event: bool
+            publisher wants to send event name in callback or not.
+
+        verbose: bool
+            used for logging purpose if False no log message are passed.
         """
-        subscribers: List = self._handler.get(event)
+        super().pub(event, payload, send_event, verbose)
 
-        if subscribers:
-            for subscr in subscribers:
-                if callable(subscr):
-                    try:
-                        subscr(payload)
-                    except Exception as e:
-                        print(e)
-
-    def sub(self, event: str, callback: Callable[[Any], None]) -> Union[None, TypeError]:
+    def sub(self, event: str, callback: Callable[[str, Any], None], verbose: bool = True) -> Union[None, TypeError]:
         """Subscribes event with callback.\n
         It checks if callback is not callable then raises TypeError
         else returns None.
@@ -60,14 +61,12 @@ class SimplePubsub(AbstractPubSub):
 
         callback: Callable
             callback must be callable function.
+
+        verbose: bool
+            used for logging purpose if False no log message are passed.
         """
 
         super().sub(event, callback)
-
-        if event not in self._handler:
-            self._handler[event] = [callback]
-        else:
-            self._handler[event].append(callback)
 
 
 class ThreadSafePubSub(AbstractPubSub):
@@ -86,7 +85,10 @@ class ThreadSafePubSub(AbstractPubSub):
         event is published then notify everyone who have subscribed.
 
     sub(event, callback)
-        register callback with the event."""
+        register callback with the event.
+
+    unsub(event, callback)
+        unregister callback with the event."""
 
     _instance = None
     _lock: Lock = Lock()
@@ -101,7 +103,7 @@ class ThreadSafePubSub(AbstractPubSub):
                 cls._instance = super(ThreadSafePubSub, cls).__new__(cls)
         return cls._instance
 
-    def pub(self, event: str, payload: Any) -> None:
+    def pub(self, event: str, payload: Any, send_event: bool = False, verbose: bool = True) -> None:
         """Publishes the events.
 
         Parameters:
@@ -111,19 +113,17 @@ class ThreadSafePubSub(AbstractPubSub):
 
         payload: Any
             Any kind of data structure to handle with event.
+
+        send_event: bool
+            publisher wants to send event name in callback or not.
+
+        verbose: bool
+            used for logging purpose if False no log message are passed.
         """
-        subscribers: List = self._handler.get(event)
-
         with self._lock:
-            if subscribers:
-                for subscr in subscribers:
-                    if callable(subscr):
-                        try:
-                            subscr(payload)
-                        except Exception as e:
-                            print(e)
+            super().pub(event, payload, send_event, verbose)
 
-    def sub(self, event: str, callback: Callable[[Any], None]) -> Union[None, TypeError]:
+    def sub(self, event: str, callback: Callable[[str, Any], None], verbose: bool = True) -> Union[None, TypeError]:
         """Subscribes event with callback.\n
         It checks if callback is not callable then raises TypeError
         else returns None.
@@ -136,16 +136,12 @@ class ThreadSafePubSub(AbstractPubSub):
 
         callback: Callable
             callback must be callable function.
+
+        verbose: bool
+            used for logging purpose if False no log message are passed.
         """
-
-        super().sub(event, callback)
-
-        # print("Sub Called")
         with self._lock:
-            if event not in self._handler:
-                self._handler[event] = [callback]
-            else:
-                self._handler[event].append(callback)
+            super().pub(event, callback, verbose)
 
 
 class RegexPubsub(AbstractPubSub):
@@ -164,13 +160,16 @@ class RegexPubsub(AbstractPubSub):
         event is published then notify everyone who have subscribed.
 
     sub(event, callback)
-        register callback with the event."""
+        register callback with the event.
+
+    unsub(event, callback)
+        unregister callback with the event."""
 
     def __init__(self):
         """Simple pubsub constructor."""
         self._handler = RegexDict()
 
-    def pub(self, event: str, payload: Any) -> None:
+    def pub(self, event: str, payload: Any, send_event: bool = False, verbose: bool = True) -> None:
         """Publishes the events.
 
         Parameters:
@@ -180,18 +179,16 @@ class RegexPubsub(AbstractPubSub):
 
         payload: Any
             Any kind of data structure to handle with event.
+
+        send_event: bool
+            publisher wants to send event name in callback or not.
+
+        verbose: bool
+            used for logging purpose if False no log message are passed.
         """
-        subscribers: List = self._handler.get(event)
+        super().pub(event, payload, send_event, verbose)
 
-        if subscribers:
-            for subscr in subscribers:
-                if callable(subscr):
-                    try:
-                        subscr(payload)
-                    except Exception as e:
-                        print(e)
-
-    def sub(self, event: str, callback: Callable[[Any], None]) -> Union[None, TypeError]:
+    def sub(self, event: str, callback: Callable[[str, Any], None], verbose: bool = True) -> Union[None, TypeError]:
         """Subscribes event with callback.\n
         It checks if callback is not callable then raises TypeError
         else returns None.
@@ -204,13 +201,12 @@ class RegexPubsub(AbstractPubSub):
 
         callback: Callable
             callback must be callable function.
+
+        verbose: bool
+            used for logging purpose if False no log message are passed.
         """
 
         super().sub(event, callback)
-        if self._handler.get(event):
-            self._handler.get(event).append(callback)
-        else:
-            self._handler[event] = [callback]
 
 
 class ThreadSafeRegexPubsub(ThreadSafePubSub):
@@ -229,7 +225,10 @@ class ThreadSafeRegexPubsub(ThreadSafePubSub):
         event is published then notify everyone who have subscribed.
 
     sub(event, callback)
-        register callback with the event."""
+        register callback with the event.
+
+    unsub(event, callback)
+        unregister callback with the event."""
 
     def __init__(self):
         self._handler = RegexDict()

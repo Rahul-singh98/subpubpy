@@ -29,6 +29,5 @@ class TestRegexDict(TestCase):
         self.assertEqual(t1[r'test.*'], normal_val)
 
 
-
 if __name__ == "__main__":
     main()
