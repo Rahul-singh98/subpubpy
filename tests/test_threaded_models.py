@@ -27,7 +27,7 @@ class TestThreadSafePubSub(TestCase):
 
     def test_sub_callback_lambda(self):
         s1 = ThreadSafePubSub()
-        s1.sub("test_event", lambda x: None)
+        s1.sub("test_lambda_event", lambda x: None)
 
     def test_sub_callback_function_1(self):
         s1 = ThreadSafePubSub()
@@ -35,7 +35,7 @@ class TestThreadSafePubSub(TestCase):
         def func(par):
             return None
 
-        s1.sub("test_event", func)
+        s1.sub("test_lambda_event", func)
 
     def test_sub_callback_function_2(self):
         s1 = ThreadSafePubSub()
@@ -52,7 +52,7 @@ class TestThreadSafePubSub(TestCase):
         def callback(_data):
             print(_data, end='')
 
-        event_name = "test_event"
+        event_name = "test_publish_event_1"
         publish_msg = "hello test"
         t1.sub(event_name, callback)
 

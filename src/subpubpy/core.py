@@ -1,6 +1,5 @@
-from subpubpy.abstract import *
-from subpubpy.utils import RegexDict
-from typing import List
+from .abstract import *
+from .utils import RegexDict
 from threading import Lock
 
 
@@ -141,7 +140,7 @@ class ThreadSafePubSub(AbstractPubSub):
             used for logging purpose if False no log message are passed.
         """
         with self._lock:
-            super().pub(event, callback, verbose)
+            super().sub(event, callback, verbose)
 
 
 class RegexPubsub(AbstractPubSub):
