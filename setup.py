@@ -7,7 +7,7 @@ long_description = (BASE_DIR / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="subpubpy",
-    version="0.0.4",
+    version="0.0.5",
     description="Multithreading supported python package for publisher and subscriber model.",
     long_description=long_description,
     long_description_content_type="text/markdown",

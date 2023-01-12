@@ -29,7 +29,8 @@ def pub(self, event: str, payload: Any, verbose: bool = True) -> None:
 * `sub`: Each classes have a method sub which referes to the term subscribe. So, sub is a method which is used to subscribe a event. 
 
 ```python
-def sub(self, event: str, callback: Callable[[str, Any], None], verbose: bool = True) -> Union[None, TypeError]:
+def sub(self, event: str, callback: Callable[[str, Any], None], verbose: bool = True) -> Union[
+        None, TypeError]:
         """Subscribes event with callback.\n
         Here it checks if callback is not callable then raises TypeError \n
         else returns None.
