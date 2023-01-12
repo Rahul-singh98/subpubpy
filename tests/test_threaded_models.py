@@ -1,66 +1,98 @@
-from src.subpubpy import ThreadSafePubSub
+from src.subpubpy import ThreadSafeSubpub, ThreadSafeRegexSubpub
 from unittest import TestCase, main
 from unittest.mock import patch
 from threading import Thread
 import io
 
 
-class TestThreadSafePubSub(TestCase):
+class TestThreadSafeSubpub(TestCase):
+
+    def tearDown(self) -> None:
+        return super().tearDown()
 
     def test_creation(self):
-        t1 = ThreadSafePubSub()
+        threadsafe_subpub = ThreadSafeSubpub()
+        self.assertIsNotNone(threadsafe_subpub)
 
     def test_multiple_create(self):
-        t1 = ThreadSafePubSub()
-        t2 = ThreadSafePubSub()
+        threadsafe_subpub = ThreadSafeSubpub()
+        threadsafe_subpub_2 = ThreadSafeSubpub()
 
         # test objects
-        self.assertEqual(t1, t2)
+        self.assertEqual(threadsafe_subpub, threadsafe_subpub_2)
 
         # test objects addresses
-        self.assertEqual(id(t1), id(t2))
+        self.assertEqual(id(threadsafe_subpub), id(threadsafe_subpub_2))
 
     def test_sub_callback_int(self):
-        s1 = ThreadSafePubSub()
+        threadsafe_subpub = ThreadSafeSubpub()
         with self.assertRaises(TypeError):
-            s1.sub("test_event", 2)
+            threadsafe_subpub.sub("test_sub_callback_int", 2)
 
     def test_sub_callback_lambda(self):
-        s1 = ThreadSafePubSub()
-        s1.sub("test_lambda_event", lambda x: None)
+        threadsafe_subpub = ThreadSafeSubpub()
 
-    def test_sub_callback_function_1(self):
-        s1 = ThreadSafePubSub()
-
-        def func(par):
-            return None
-
-        s1.sub("test_lambda_event", func)
-
-    def test_sub_callback_function_2(self):
-        s1 = ThreadSafePubSub()
-
-        def func(par=None):
-            return None
         with self.assertRaises(TypeError):
-            s1.sub("test_event", func())
+            threadsafe_subpub.sub("test_sub_callback_lambda", lambda x: None)
+
+    def test_sub_callback_function_1_param(self):
+        threadsafe_subpub = ThreadSafeSubpub()
+
+        def func(par): ...
+
+        with self.assertRaises(TypeError):
+            threadsafe_subpub.sub("test_sub_callback_function_1_param", func)
+
+    def test_sub_callback_function_1_default_param(self):
+        threadsafe_subpub = ThreadSafeSubpub()
+
+        def func(par=None): ...
+
+        with self.assertRaises(TypeError):
+            threadsafe_subpub.sub(
+                "test_sub_callback_function_1_default_param", func())
+
+    def test_sub_callback_pass(self):
+        simple_pubsub = ThreadSafeSubpub()
+
+        def func(par1, par2): ...
+        simple_pubsub.sub("test_sub_callback_pass", func)
+
+    def test_unsub_no_event_subscription(self):
+        threadsafe_subpub = ThreadSafeSubpub()
+
+        with self.assertRaises(ValueError):
+            threadsafe_subpub.unsub("test_unsub_no_event_subscription", None)
+
+    def test_unsub_no_callback_subscr(self):
+        threadsafe_subpub = ThreadSafeSubpub()
+
+        def func(*args, **kwargs): ...
+
+        with self.assertRaises(ValueError):
+            threadsafe_subpub.unsub("test_unsub_no_callback_subscr", func)
+
+    def test_unsub_passed(self):
+        threadsafe_subpub = ThreadSafeSubpub()
+
+        def func(arg1, arg2): ...
+
+        threadsafe_subpub.sub('test_unsub_passed', func)
+        threadsafe_subpub.unsub("test_unsub_passed", func)
 
     @patch('sys.stdout', new_callable=io.StringIO)
-    def test_publisher_1(self, mock_stdout):
-        t1 = ThreadSafePubSub()
+    def test_publish_passed(self, mock_out):
+        threadsafe_subpub = ThreadSafeSubpub()
+        event = "test_publish_passed"
+        payload = "payload_test"
 
-        def callback(_data):
-            print(_data, end='')
+        def func(event, payload):
+            print(f"{event} {payload}")
 
-        event_name = "test_publish_event_1"
-        publish_msg = "hello test"
-        t1.sub(event_name, callback)
+        threadsafe_subpub.sub(event, func)
+        threadsafe_subpub.pub(event, payload)
 
-        t1.pub(event_name, publish_msg)
-        self.assertEqual(
-            mock_stdout.getvalue(),
-            publish_msg
-        )
+        self.assertEqual(mock_out.getvalue(), f"{event} {payload}\n"*2)
 
 
 class Runner():
@@ -70,7 +102,7 @@ class Runner():
         self.thread_results = {}
 
     def add(self, target, name):
-        self.threads[name] = Thread(target = self.run, args = [target, name])
+        self.threads[name] = Thread(target=self.run, args=[target, name])
         self.threads[name].start()
 
     def run(self, target, name):
@@ -80,10 +112,18 @@ class Runner():
 
     def check_result(self, name):
         self.threads[name].join()
-        assert(self.thread_results[name] == 'pass')
+        assert (self.thread_results[name] == 'pass')
+
+
+class TestThreadSafeRegexSubpub(TestCase):
+
+    def test_create(self):
+        threadsaferegex_subpub = ThreadSafeRegexSubpub()
+        self.assertIsNotNone(threadsaferegex_subpub)
 
 
 runner = Runner()
+
 
 class MyTests(TestCase):
     @classmethod
@@ -102,6 +142,3 @@ class MyTests(TestCase):
 
     def test_no_err(self):
         runner.check_result('test_no_err')
-
-if __name__ == "__main__":
-    main()

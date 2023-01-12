@@ -3,7 +3,7 @@ from .utils import RegexDict
 from threading import Lock
 
 
-class SimplePubsub(AbstractPubSub):
+class SimpleSubpub(AbstractSubpub):
     """Simple publish subscriber model which works under the main\n
     thread.
 
@@ -25,10 +25,10 @@ class SimplePubsub(AbstractPubSub):
         unregister callback with the event."""
 
     def __init__(self):
-        """Simple pubsub constructor."""
+        """Simple subpub constructor."""
         super().__init__()
 
-    def pub(self, event: str, payload: Any, send_event: bool = False, verbose: bool = True) -> None:
+    def pub(self, event: str, payload: Any, verbose: bool = True) -> None:
         """Publishes the events.
 
         Parameters:
@@ -39,13 +39,10 @@ class SimplePubsub(AbstractPubSub):
         payload: Any
             Any kind of data structure to handle with event.
 
-        send_event: bool
-            publisher wants to send event name in callback or not.
-
-        verbose: bool
+        verbose: Optional[bool]
             used for logging purpose if False no log message are passed.
         """
-        super().pub(event, payload, send_event, verbose)
+        super().pub(event, payload, verbose)
 
     def sub(self, event: str, callback: Callable[[str, Any], None], verbose: bool = True) -> Union[None, TypeError]:
         """Subscribes event with callback.\n
@@ -61,14 +58,14 @@ class SimplePubsub(AbstractPubSub):
         callback: Callable
             callback must be callable function.
 
-        verbose: bool
+        verbose: Optional[bool]
             used for logging purpose if False no log message are passed.
         """
 
         super().sub(event, callback)
 
 
-class ThreadSafePubSub(AbstractPubSub):
+class ThreadSafeSubpub(AbstractSubpub):
     """Thread safe publish subscriber model which works under multithreading\n
     concept.
 
@@ -99,10 +96,10 @@ class ThreadSafePubSub(AbstractPubSub):
         """
         with cls._lock:
             if not cls._instance:
-                cls._instance = super(ThreadSafePubSub, cls).__new__(cls)
+                cls._instance = super(ThreadSafeSubpub, cls).__new__(cls)
         return cls._instance
 
-    def pub(self, event: str, payload: Any, send_event: bool = False, verbose: bool = True) -> None:
+    def pub(self, event: str, payload: Any, verbose: bool = True) -> None:
         """Publishes the events.
 
         Parameters:
@@ -113,14 +110,11 @@ class ThreadSafePubSub(AbstractPubSub):
         payload: Any
             Any kind of data structure to handle with event.
 
-        send_event: bool
-            publisher wants to send event name in callback or not.
-
-        verbose: bool
+        verbose: Optional[bool]
             used for logging purpose if False no log message are passed.
         """
         with self._lock:
-            super().pub(event, payload, send_event, verbose)
+            super().pub(event, payload, verbose)
 
     def sub(self, event: str, callback: Callable[[str, Any], None], verbose: bool = True) -> Union[None, TypeError]:
         """Subscribes event with callback.\n
@@ -136,14 +130,14 @@ class ThreadSafePubSub(AbstractPubSub):
         callback: Callable
             callback must be callable function.
 
-        verbose: bool
+        verbose: Optional[bool]
             used for logging purpose if False no log message are passed.
         """
         with self._lock:
             super().sub(event, callback, verbose)
 
 
-class RegexPubsub(AbstractPubSub):
+class RegexSubpub(AbstractSubpub):
     """Publish subscriber model which works under the main\n
     thread with regular expressions.
 
@@ -165,10 +159,10 @@ class RegexPubsub(AbstractPubSub):
         unregister callback with the event."""
 
     def __init__(self):
-        """Simple pubsub constructor."""
+        """Regex subpub constructor."""
         self._handler = RegexDict()
 
-    def pub(self, event: str, payload: Any, send_event: bool = False, verbose: bool = True) -> None:
+    def pub(self, event: str, payload: Any, verbose: bool = True) -> None:
         """Publishes the events.
 
         Parameters:
@@ -179,13 +173,10 @@ class RegexPubsub(AbstractPubSub):
         payload: Any
             Any kind of data structure to handle with event.
 
-        send_event: bool
-            publisher wants to send event name in callback or not.
-
-        verbose: bool
+        verbose: Optional[bool]
             used for logging purpose if False no log message are passed.
         """
-        super().pub(event, payload, send_event, verbose)
+        super().pub(event, payload, verbose)
 
     def sub(self, event: str, callback: Callable[[str, Any], None], verbose: bool = True) -> Union[None, TypeError]:
         """Subscribes event with callback.\n
@@ -201,14 +192,14 @@ class RegexPubsub(AbstractPubSub):
         callback: Callable
             callback must be callable function.
 
-        verbose: bool
+        verbose: Optional[bool]
             used for logging purpose if False no log message are passed.
         """
 
         super().sub(event, callback)
 
 
-class ThreadSafeRegexPubsub(ThreadSafePubSub):
+class ThreadSafeRegexSubpub(ThreadSafeSubpub):
     """Thread safe publish subscriber model which works under multithreading\n
     concept and regular expression.
 

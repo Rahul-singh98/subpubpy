@@ -1,12 +1,12 @@
-from src.subpubpy.abstract import AbstractPubSub
+from src.subpubpy.abstract import AbstractSubpub
 from unittest import TestCase, main
 
 
-class TestAbstractPubSub(TestCase):
+class TestAbstractSubpub(TestCase):
 
     def test_creation(self):
         with self.assertRaises(Exception):
-            t1 = AbstractPubSub()
+            t1 = AbstractSubpub()
 
 
 if __name__ == "__main__":

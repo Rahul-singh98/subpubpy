@@ -5,29 +5,25 @@ from unittest import TestCase, main
 class TestRegexDict(TestCase):
 
     def test_creation(self):
-        t1 = RegexDict()
-        self.assertIsInstance(t1, dict)
+        regex_dict = RegexDict()
+        self.assertIsInstance(regex_dict, dict)
 
     def test_simple_key(self):
-        value = 'test'
+        param = 'test'
 
-        t1 = RegexDict()
-        t1[value] = value
-        self.assertEqual(t1.get(value), value)
+        regex_dict = RegexDict()
+        regex_dict[param] = param
+        self.assertEqual(regex_dict.get(param), param)
 
     def test_regex_key_1(self):
-        normal_val = "test_1234"
-        t1 = RegexDict()
+        param = "test_1234"
+        regex_dict = RegexDict()
 
-        t1[normal_val] = normal_val
+        regex_dict[param] = param
 
         # Simple test
-        self.assertEqual(t1.get(normal_val), normal_val)
+        self.assertEqual(regex_dict.get(param), param)
 
         # Regex Test
-        self.assertEqual(t1.get(r'test.*'), normal_val)
-        self.assertEqual(t1[r'test.*'], normal_val)
-
-
-if __name__ == "__main__":
-    main()
+        self.assertEqual(regex_dict.get(r'test.*'), param)
+        self.assertEqual(regex_dict[r'test.*'], param)

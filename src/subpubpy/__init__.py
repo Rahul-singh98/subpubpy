@@ -1,3 +1,3 @@
-from .core import SimplePubsub, ThreadSafePubSub, ThreadSafeRegexPubsub, RegexPubsub
+from .core import SimpleSubpub, ThreadSafeSubpub, ThreadSafeRegexSubpub, RegexSubpub
 
-__all__ = [SimplePubsub, ThreadSafePubSub, ThreadSafeRegexPubsub, RegexPubsub]
+__all__ = [SimpleSubpub, ThreadSafeSubpub, ThreadSafeRegexSubpub, RegexSubpub]

@@ -1,10 +1,12 @@
 from abc import ABC, abstractmethod
-from typing import Any, Callable, Union, List
+from typing import Any, Callable, Union, Set
+from threading import Thread
+import inspect
 import logging
 
 
-class AbstractPubSub(ABC):
-    """Absact pubsub class.
+class AbstractSubpub(ABC):
+    """Absact SubPub class.
 
     Attributes:
     -----------
@@ -28,11 +30,11 @@ class AbstractPubSub(ABC):
     _handler = dict()
 
     def __init__(self):
-        """Pubsub Base constructor
+        """SubPub Base constructor
         """
 
     @abstractmethod
-    def pub(self, event: str, payload: Any, send_event: bool = False, verbose: bool = True) -> None:
+    def pub(self, event: str, payload: Any, verbose: bool = True) -> None:
         """Publishes the events.
 
         Parameters:
@@ -43,23 +45,26 @@ class AbstractPubSub(ABC):
         payload: Any
             Any kind of data structure to handle with event.
 
-        send_event: bool
-            publisher wants to send event name in callback or not.
-
-        verbose: bool
+        verbose: Optional[bool]
             used for logging purpose if False no log message are passed.
         """
-        subscribers: List = self._handler.get(event)
+        def caller_function(handler: dict, event: str, payload: Any,
+                            verbose: bool = True):
+            subscribers_set: Set = handler.get(event)
 
-        if subscribers:
-            for subscr in subscribers:
-                if callable(subscr):
-                    try:
-                        subscr(payload) if event else subscr(event, payload)
-                    except Exception as e:
-                        logging.error(f"[Publish] {event} causing error {e}")
-        if verbose:
-            logging.info(f"[Publish] {event}\n [Payload] {payload}")
+            if subscribers_set:
+                for subscr in subscribers_set:
+                    subscr(event, payload)
+
+                if verbose:
+                    logging.info(f"[Publish] {event}\n [Payload] {payload}")
+
+        th = Thread(target=caller_function, kwargs={
+            'handler': self._handler,
+            'event': event, 'payload': payload,
+            "verbose": verbose})
+        th.daemon = True
+        th.start()
 
     @abstractmethod
     def sub(self, event: str, callback: Callable[[str, Any], None], verbose: bool = True) -> Union[None, TypeError]:
@@ -75,25 +80,28 @@ class AbstractPubSub(ABC):
         callback: Callable
             callback must be callable function.
 
-        verbose: bool
+        verbose: Optional[bool]
             used for logging purpose if False no log message are passed.
         """
 
         if not callable(callback):
             raise TypeError(f"{type(callback)} is not Callable")
 
+        args = inspect.getfullargspec(callback)
+
+        if len(args.args) != 2:
+            raise TypeError("Callback require two arguments")
+
         if event not in self._handler:
-            self._handler[event] = [callback]
-        else:
-            self._handler[event].append(callback)
+            self._handler[event] = set()
+        self._handler[event].add(callback)
 
         if verbose:
             logging.info('[Subscribe] {0} assigned to {1}'.format(
                 callback, event))
-        return None
 
-    def unsub(self, event: str, callback: Callable[[str, Any], None], verbose: bool = True) -> Union[
-            None, TypeError, ValueError]:
+    def unsub(self, event: str, handler: Any, verbose: bool = True) -> Union[
+            None, ValueError]:
         """Unsubscribes event with callback.\n
         Unsubscribe checks callback is assigned to event else raise ValueError.
 
@@ -102,22 +110,18 @@ class AbstractPubSub(ABC):
         event: str
             event which need to be subscribe.
 
-        callback: Callable
-            callback must be callable function.
+        hanlder: Any
+            remove handler from the system.
 
-        verbose: bool
+        verbose: Optional[bool]
             used for logging purpose if False no log message are passed.
         """
-        if not callable(callback):
-            raise TypeError(f"{type(callback)} is not Callable")
-
         if event in self._handler:
-            if callback in self._handler.get(event):
-                idx = self._handler.get(event).index(callback)
-                self._handler[event].remove(idx)
+            if handler in self._handler[event]:
+                self._handler[event].remove(handler)
 
                 if verbose:
                     logging.info('[Unubscribe] {0} assigned to {1}'.format(
-                        callback, event))
-                return None
-        raise ValueError(f"{callback} is not subscribed with {event}")
+                        handler, event))
+                return
+        raise ValueError(f"{handler} is not subscribed with {event}")
