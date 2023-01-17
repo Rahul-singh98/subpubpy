@@ -2,7 +2,11 @@ from abc import ABC, abstractmethod
 from typing import Any, Callable, Union, Set
 from threading import Thread
 import inspect
+from .utils import custom_hook
 import logging
+import threading
+
+threading.excepthook = custom_hook
 
 
 class AbstractSubpub(ABC):
@@ -48,23 +52,20 @@ class AbstractSubpub(ABC):
         verbose: Optional[bool]
             used for logging purpose if False no log message are passed.
         """
-        def caller_function(handler: dict, event: str, payload: Any,
-                            verbose: bool = True):
-            subscribers_set: Set = handler.get(event)
+        # def caller_function(handler: dict, event: str, payload: Any,
+        #                     verbose: bool = True):
+        subscribers_set: Set = self._handler.get(event)
 
-            if subscribers_set:
-                for subscr in subscribers_set:
-                    subscr(event, payload)
+        if subscribers_set:
+            for subscr in subscribers_set:
+                # print(f"Calling thread for {event} {payload}")
+                subscr(event, payload)
+                th = Thread(name=f"{event}", target=subscr,
+                            args=(event, payload), daemon=True)
+                th.start()
 
-                if verbose:
-                    logging.info(f"[Publish] {event}\n [Payload] {payload}")
-
-        th = Thread(target=caller_function, kwargs={
-            'handler': self._handler,
-            'event': event, 'payload': payload,
-            "verbose": verbose})
-        th.daemon = True
-        th.start()
+            if verbose:
+                logging.info(f"[Publish] {event} [Payload] {payload}")
 
     @abstractmethod
     def sub(self, event: str, callback: Callable[[str, Any], None], verbose: bool = True) -> Union[None, TypeError]:

@@ -1,4 +1,5 @@
 import re
+import logging
 
 
 class RegexDict(dict):
@@ -15,3 +16,7 @@ class RegexDict(dict):
 
     def get(self, pattern):
         return self.__getitem__(pattern)
+
+
+def custom_hook(args):
+    logging.error(f'{args.thread} causing {args.exc_type} : {args.exc_value}')

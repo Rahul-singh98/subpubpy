@@ -92,7 +92,7 @@ class TestThreadSafeSubpub(TestCase):
         threadsafe_subpub.sub(event, func)
         threadsafe_subpub.pub(event, payload)
 
-        self.assertEqual(mock_out.getvalue(), f"{event} {payload}\n"*2)
+        self.assertEqual(mock_out.getvalue(), f"{event} {payload}\n"*4)
 
 
 class Runner():

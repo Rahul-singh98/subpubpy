@@ -92,7 +92,7 @@ class TestSimpleSubpub(TestCase):
         simple_subpub.sub(event, func)
         simple_subpub.pub(event, payload)
 
-        self.assertEqual(mock_out.getvalue(), f"{event} {payload}\n")
+        self.assertEqual(mock_out.getvalue(), f"{event} {payload}\n" * 2)
 
 
 class TestRegexSubpub(TestCase):
@@ -174,7 +174,7 @@ class TestRegexSubpub(TestCase):
         regex_subpub = RegexSubpub()
 
         def callback(event, payload):
-            print(f"{event} {payload}")
+            print(f"{event} {payload}", flush=True)
 
         event = "test_publisher_without_regex"
         payload = "okay"
@@ -184,7 +184,7 @@ class TestRegexSubpub(TestCase):
 
         self.assertEqual(
             mock_stdout.getvalue(),
-            f"{event} {payload}\n")
+            f"{event} {payload}\n" * 2)
 
     @patch('sys.stdout', new_callable=io.StringIO)
     def test_publisher_with_regex(self, mock_stdout):
