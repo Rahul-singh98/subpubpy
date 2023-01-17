@@ -87,19 +87,23 @@ class AbstractSubpub(ABC):
 
         if not callable(callback):
             raise TypeError(f"{type(callback)} is not Callable")
-
         args = inspect.getfullargspec(callback)
 
-        if len(args.args) != 2:
+        required_args = 2
+
+        if 'self' in args.args:
+            required_args += 1
+
+        if len(args.args) == required_args:
+            if event not in self._handler:
+                self._handler[event] = set()
+            self._handler[event].add(callback)
+
+            if verbose:
+                logging.info('[Subscribe] {0} assigned to {1}'.format(
+                    callback, event))
+        else:
             raise TypeError("Callback require two arguments")
-
-        if event not in self._handler:
-            self._handler[event] = set()
-        self._handler[event].add(callback)
-
-        if verbose:
-            logging.info('[Subscribe] {0} assigned to {1}'.format(
-                callback, event))
 
     def unsub(self, event: str, handler: Any, verbose: bool = True) -> Union[
             None, ValueError]:
