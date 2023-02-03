@@ -8,7 +8,7 @@ long_description = (BASE_DIR / "README.md").read_text(encoding="utf-8")
 setup(
     name="subpubpy",
     # development version
-    version="0.0.8",
+    version="0.0.9",
 
     # production version
     # version='0.0.8',

@@ -231,5 +231,6 @@ class ThreadSafeRegexSubpub(ThreadSafeSubpub):
 class ThreadSafeSimplePubsub(SimpleSubscriber, SimplePublisher):
 
     def __init__(self, channels: Set = None, q: Queue = None):
-        AbstractSubscriber.__init__(AbstractSubscriber, channels, q)
-        AbstractPublisher.__init__(AbstractPublisher)
+        super().__init__(channels, q)
+        # AbstractSubscriber.__init__(AbstractSubscriber, channels, q)
+        # AbstractPublisher.__init__(AbstractPublisher)

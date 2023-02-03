@@ -1,7 +1,8 @@
-from src.subpubpy import ThreadSafeSubpub, ThreadSafeRegexSubpub
-from unittest import TestCase, main
+from src.subpubpy import ThreadSafeSubpub, ThreadSafeRegexSubpub, PubSubChannels
+from unittest import TestCase
 from unittest.mock import patch
 from threading import Thread
+import time
 import io
 
 
@@ -122,23 +123,8 @@ class TestThreadSafeRegexSubpub(TestCase):
         self.assertIsNotNone(threadsaferegex_subpub)
 
 
-runner = Runner()
+class Test_PubSubChannels(TestCase):
 
-
-class MyTests(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        def func1():
-            raise Exception("Error")
-
-        def func2():
-            return
-
-        # runner.add(func1, 'test_raise_err')
-        runner.add(func2, 'test_no_err')
-
-    # def test_raise_err(self):
-    #     runner.check_result('test_raise_err')
-
-    def test_no_err(self):
-        runner.check_result('test_no_err')
+    def test_init(self):
+        obj = PubSubChannels()
+        self.assertIsNotNone(obj)
