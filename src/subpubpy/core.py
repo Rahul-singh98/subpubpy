@@ -1,6 +1,10 @@
 from .abstract import *
 from .utils import RegexDict
 from threading import Lock
+from typing import Set
+from queue import Queue
+from .subscribers import SimpleSubscriber
+from .publishers import SimplePublisher
 
 
 class SimpleSubpub(AbstractSubpub):
@@ -222,3 +226,10 @@ class ThreadSafeRegexSubpub(ThreadSafeSubpub):
 
     def __init__(self):
         self._handler = RegexDict()
+
+
+class ThreadSafeSimplePubsub(SimpleSubscriber, SimplePublisher):
+
+    def __init__(self, channels: Set = None, q: Queue = None):
+        AbstractSubscriber.__init__(AbstractSubscriber, channels, q)
+        AbstractPublisher.__init__(AbstractPublisher)

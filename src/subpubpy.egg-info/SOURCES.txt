@@ -4,7 +4,11 @@ pyproject.toml
 setup.py
 src/subpubpy/__init__.py
 src/subpubpy/abstract.py
+src/subpubpy/channels.py
 src/subpubpy/core.py
+src/subpubpy/manager.py
+src/subpubpy/publishers.py
+src/subpubpy/subscribers.py
 src/subpubpy/utils.py
 src/subpubpy.egg-info/PKG-INFO
 src/subpubpy.egg-info/SOURCES.txt

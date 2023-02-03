@@ -7,7 +7,11 @@ long_description = (BASE_DIR / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="subpubpy",
-    version="0.0.7",
+    # development version
+    version="0.0.8",
+
+    # production version
+    # version='0.0.8',
     description="Multithreading supported python package for publisher and subscriber model.",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -26,7 +30,7 @@ setup(
         "Programming Language :: Python :: 3 :: Only",
     ],
     keywords="subpubpy, setuptools, development",
-    package_dir={"": "src"},  
+    package_dir={"": "src"},
     packages=find_packages(where="src"),
     python_requires=">=3.8, <4",
     install_requires=[],
