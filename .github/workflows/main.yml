@@ -22,7 +22,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: List files in the repository
-        run: |
+      run: |
           ls ${{ github.workspace }}
     - name: Install Dependencies
       run: |
